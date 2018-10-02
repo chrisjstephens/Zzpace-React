@@ -1,21 +1,37 @@
 import React, { Component } from 'react';
+import { Switch, Route, BrowserRouter} from 'react-router-dom';
+
+
 import logo from './logo.svg';
 import './App.css';
-import HeaderView from './components/headerView.react.js'
+import HeaderView from './components/HeaderView.react.js';
+import Flights from './components/Flights.react.js';
+import Home from './components/Home.react.js';
+import Hotels from './components/Hotels.react.js';
+import Teleportation from './components/Teleportation.react.js';
+import Error from './components/Error.react.js';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
+      <BrowserRouter>
+      <div className="app">
           <div className="container">
             <HeaderView/>
           </div>
           <div className="container">
             <div className="jumbotron rounded border p-3">
-            {/*main content*/}
+              <Switch>
+                <Route exact path='/' component={Home}>Home<span className="sr-only">(current)</span></Route>
+                <Route path='/flights' component={Flights}>Flights</Route>
+                <Route path='/hotels' component={Hotels}>Hotels</Route>
+                <Route path='/teleportation' component={Teleportation}>Teleportation</Route>
+                <Route component={Error}/>
+              </Switch>
             </div>
           </div>
       </div>
+      </BrowserRouter>
     );
   }
 }
