@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Hero(props) {
   return (
@@ -8,7 +9,7 @@ export default function Hero(props) {
         <hr className="my-4"/>
         <p>We help you with flights, teleportation and hotels with the best prices available!</p>
         <p className="lead">
-          <a className="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+          <Link className="btn btn-primary btn-lg" to="#" role="button">Learn more</Link>
         </p>
       </div>
   );

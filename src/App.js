@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Switch, Route, BrowserRouter} from 'react-router-dom';
 
-
-import logo from './logo.svg';
 import './App.css';
 import HeaderView from './components/HeaderView.react.js';
 import Flights from './components/Flights.react.js';
