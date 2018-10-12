@@ -1,17 +1,25 @@
 import React from 'react';
+import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+
 
 export default class Flights extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      toLocation: 'Earth',
-      fromLocation: 'Earth'
+      toLocation: 'Default',
+      fromLocation: 'Default',
+      tickets: 'Default',
+
     };
 
     this.locations = [
+        {
+          value: "Default",
+          label: "Please pick a location"
+        },
         {
           value: "Earth",
           label: "Earth"
@@ -37,6 +45,38 @@ export default class Flights extends React.Component {
           label: "Saturn"
         }
     ];
+
+    this.ticketsNum = [
+      {
+        value: "Default",
+        label: "Please select the amount of tickets"
+      },
+      {
+        value: 1,
+        label: "1"
+      },
+      {
+        value: 2,
+        label: "2"
+      },
+      {
+        value: 3,
+        label: "3"
+      },
+      {
+        value: 4,
+        label: "4"
+      },
+      {
+        value: 5,
+        label: "5"
+      },
+      {
+        value: 6,
+        label: "6"
+      },
+    ];
+
   }
 
   handleChange = name => event => {
@@ -47,6 +87,10 @@ export default class Flights extends React.Component {
 
 
   render() {
+    const minDate = new Date().toISOString().slice(0,10);
+    const minDepartureDate = minDate;
+    const minReturnDate = minDate;  //Add 24 hours to this
+
     return (
       <div>
         <form>
@@ -63,13 +107,12 @@ export default class Flights extends React.Component {
                   select
                   label="From"
                   value={this.state.toLocation}
-                  onChange={this.handleChange('toLication')}
+                  onChange={this.handleChange('toLocation')}
                   SelectProps={{
                     MenuProps: {
                       className: "test",
                     },
                   }}
-                  helperText="Please select a to location"
                   margin="normal"
                 >
                   {this.locations.map(option => (
@@ -91,7 +134,7 @@ export default class Flights extends React.Component {
                     className: "test",
                   },
                 }}
-                helperText="Please select a from location"
+                placeholder="Please select a from location"
                 margin="normal"
                 >
                 {this.locations.map(option => (
@@ -109,33 +152,53 @@ export default class Flights extends React.Component {
                   id="departure-date"
                   label="Departure Date"
                   type="date"
-                  defaultValue="2017-05-24"
+                  defaultValue={minDepartureDate}
                   InputLabelProps={{
                     shrink: true,
                   }}
                 />
               </div>
               <div className="form-group col-md-4">
-              <TextField
-                id="return-date"
-                label="Departure Date"
-                type="date"
-                defaultValue="2017-05-24"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
+                <TextField
+                  id="return-date"
+                  label="Departure Date"
+                  type="date"
+                  defaultValue={minDepartureDate}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
               </div>
-              <p className="text-danger    -1">The departure date must be before the return date.</p>
+              <p className="text-danger px-1">The departure date must be before the return date.</p>
             </div>
             <div className="form-row">
               <div className="form-group col-md-4">
-
+                <TextField
+                  id="standard-select-tickets"
+                  select
+                  label="Number of Tickets"
+                  value={this.state.tickets}
+                  onChange={this.handleChange('tickets')}
+                  SelectProps={{
+                    MenuProps: {
+                      className: "test",
+                    },
+                  }}
+                  margin="normal"
+                >
+                  {this.ticketsNum.map(option => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </div>
             </div>
             <div className="form-row">
               <div className="form-group col-md-4">
-
+                <Button variant="outlined">
+                  Search
+                </Button>
               </div>
             </div>
           </div>

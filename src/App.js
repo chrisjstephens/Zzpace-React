@@ -20,10 +20,10 @@ class App extends Component {
           <div className="container">
             <div className="jumbotron rounded border p-3">
               <Switch>
-                <Route exact path='/' component={Home}>Home<span className="sr-only">(current)</span></Route>
-                <Route path='/flights' component={Flights}>Flights</Route>
-                <Route path='/hotels' component={Hotels}>Hotels</Route>
-                <Route path='/teleportation' component={Teleportation}>Teleportation</Route>
+                <Route exact path='/' component={Home}/>
+                <Route path='/flights' component={Flights}/>
+                <Route path='/hotels' component={Hotels}/>
+                <Route path='/teleportation' component={Teleportation}/>
                 <Route component={Error}/>
               </Switch>
             </div>
