@@ -2,7 +2,14 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import Select from '@material-ui/core/Select';
 
+const cssStyles = {
+  minWidth: 120
+}
 
 export default class Flights extends React.Component {
   constructor(props) {
@@ -11,8 +18,8 @@ export default class Flights extends React.Component {
     this.minDate = new Date().toISOString().slice(0,10);
 
     this.state = {
-      toLocation: 'Default',
-      fromLocation: 'Default',
+      toLocation: '',
+      fromLocation: '',
       tickets: 1,
       returnFlightType: true,
       oneWayFlightType: false,
@@ -22,10 +29,6 @@ export default class Flights extends React.Component {
 
 
     this.locations = [
-        {
-          value: "Default",
-          label: "Please pick a location"
-        },
         {
           value: "Earth",
           label: "Earth"
@@ -117,8 +120,12 @@ export default class Flights extends React.Component {
     // const minDepartureDate = minDate;
     // const minReturnDate = minDate;  //Add 24 hours to this
 
-    const invalidDates = this.state.departureDate >= this.state.returnDate ? true : false;
-    console.log('ivd',this.state.departureDate, this.state.returnDate);
+    const defaultDates = ((this.state.departureDate === this.minDate) && (this.state.returnDate === this.minDate)) ? true : false;
+    const invalidDates = !defaultDates && (this.state.departureDate >= this.state.returnDate) ? true : false;
+
+    const defaultLocations = (this.state.toLocation && this.state.fromLocation) ? true : false;
+    const invalidLocations = defaultLocations && (this.state.toLocation === this.state.fromLocation) ? true : false;
+
 
     return (
       <div>
@@ -131,51 +138,46 @@ export default class Flights extends React.Component {
             </div>
             <div className="form-row">
               <div className="form-group col-md-4">
-                <TextField
-                  id="standard-select-currency"
-                  select
-                  label="From"
-                  value={this.state.toLocation}
-                  onChange={this.handleChange('toLocation')}
-                  SelectProps={{
-                    MenuProps: {
-                      className: "test",
-                    },
-                  }}
-                  margin="normal"
-                  error={this.validToLocationCheck()}
-                >
+                <FormControl  style={cssStyles}>
+                  <InputLabel htmlFor="from-simple">To</InputLabel>
+                  <Select
+                    value={this.state.toLocation}
+                    onChange={this.handleChange('toLocation')}
+                    inputProps={{
+                      name: "to",
+                      id: "to-simple"
+                    }}
+                  >
                   {this.locations.map(option => (
                     <MenuItem key={option.value} value={option.value}>
                       {option.label}
                     </MenuItem>
                   ))}
-                </TextField>
+                  </Select>
+                </FormControl>
               </div>
               <div className="form-group col-md-4">
-              <TextField
-                id="standard-select-currency"
-                select
-                label="To"
-                value={this.state.fromLocation}
-                onChange={this.handleChange('fromLocation')}
-                SelectProps={{
-                  MenuProps: {
-                    className: "test",
-                  },
-                }}
-                placeholder="Please select a from location"
-                margin="normal"
-                error={this.validFromLocationCheck()}
+              <FormControl  style={cssStyles}>
+                <InputLabel htmlFor="from-simple">From</InputLabel>
+                <Select
+                  value={this.state.fromLocation}
+                  onChange={this.handleChange('fromLocation')}
+                  inputProps={{
+                    name: "from",
+                    id: "from-simple"
+                  }}
                 >
                 {this.locations.map(option => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
                 ))}
-              </TextField>
+                </Select>
+              </FormControl>
               </div>
-              <p className="text-danger px-1">The locations cant match, please ensure that they are different.</p>
+              { invalidLocations ?
+                <p className="text-danger px-1">The locations cant match, please ensure that they are different.</p>
+              : null }
             </div>
             <div className="form-row">
               <div className="form-group col-md-4">
