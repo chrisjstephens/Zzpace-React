@@ -4,11 +4,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
 import Select from '@material-ui/core/Select';
 
 const cssStyles = {
-  minWidth: 120
+  minWidth: 180
 }
 
 export default class Flights extends React.Component {
@@ -16,15 +15,18 @@ export default class Flights extends React.Component {
     super(props);
 
     this.minDate = new Date().toISOString().slice(0,10);
+    this.minReturnDate = new Date();
+    this.minReturnDate.setDate(this.minReturnDate.getDate() + 1);
+    this.minReturnDate = this.minReturnDate.toISOString().slice(0,10);
 
     this.state = {
       toLocation: '',
       fromLocation: '',
-      tickets: 1,
+      tickets: '',
       returnFlightType: true,
       oneWayFlightType: false,
       departureDate: this.minDate,
-      returnDate: this.minDate
+      returnDate: this.minReturnDate
     };
 
 
@@ -107,34 +109,39 @@ export default class Flights extends React.Component {
     return (this.state.fromLocation === 'Default' ? true : false);
   }
 
-  validDepartureDate() {
-    return (this.state.departureDate < this.minDate ? true : false);
-  }
-
-  validReturnDate() {
-    return (this.state.returnDate < this.minDate ? true : false);
+  submitForm(e) {
+    e.preventDefault();
+    console.log('submit da form');
   }
 
   render() {
-    // const minDate = new Date().toISOString().slice(0,10);
-    // const minDepartureDate = minDate;
-    // const minReturnDate = minDate;  //Add 24 hours to this
+    //Need getTime Equivalent variables for compraison/validation
+    const departureDate = new Date(this.state.departureDate).getTime();
+    const returnDate = new Date(this.state.returnDate).getTime();
+    const minDate = new Date(this.minDate).getTime();
+    const minReturnDate = new Date(this.minReturnDate).getTime();
 
-    const defaultDates = ((this.state.departureDate === this.minDate) && (this.state.returnDate === this.minDate)) ? true : false;
-    const invalidDates = !defaultDates && (this.state.departureDate >= this.state.returnDate) ? true : false;
+    const defaultDates = ((departureDate === minDate) && (returnDate === minReturnDate));
+    const invalidDateOrder = departureDate >= returnDate;
+    const validDepartureDate = departureDate < minDate;
+    const validReturnDate = returnDate < minReturnDate;
+    const invalidDates = !defaultDates && (invalidDateOrder || validDepartureDate);
 
     const defaultLocations = (this.state.toLocation && this.state.fromLocation) ? true : false;
     const invalidLocations = defaultLocations && (this.state.toLocation === this.state.fromLocation) ? true : false;
 
+    const validTickets = this.state.tickets >= 1;
+
+    const formStatus = !(!invalidDates && !invalidLocations && validTickets);
 
     return (
       <div>
-        <form> {/*onSubmit*/}
+        <form onSubmit={this.submitForm}>
           <div>
             <h1>Flights</h1>
             <div className="btn-group pb-1" role="group" aria-label="Navigation buttons" >
-              <button type="button" className="btn btn-secondary" aria-pressed="true" onClick={this.changeFlightTypeReturn.bind(this)}>Return</button>
-              <button type="button" className="btn btn-secondary" aria-pressed="true" onClick={this.changeFlightTypeOneWay.bind(this)}>One-Way</button>
+              <button type="button" className={this.state.returnFlightType ? 'btn btn-secondary active' : 'btn btn-secondary'} aria-pressed="true" onClick={this.changeFlightTypeReturn.bind(this)}>Return</button>
+              <button type="button" className={this.state.oneWayFlightType ? 'btn btn-secondary active' : 'btn btn-secondary'} aria-pressed="true" onClick={this.changeFlightTypeOneWay.bind(this)}>One-Way</button>
             </div>
             <div className="form-row">
               <div className="form-group col-md-4">
@@ -190,7 +197,7 @@ export default class Flights extends React.Component {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  error={this.validDepartureDate()}
+                  error={validDepartureDate}
                 />
               </div>
               <div className="form-group col-md-4">
@@ -199,45 +206,42 @@ export default class Flights extends React.Component {
                   id="return-date"
                   label="Return Date"
                   type="date"
-                  defaultValue={this.minDate}
+                  defaultValue={this.minReturnDate}
                   onChange={this.handleChange('returnDate')}
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  error={this.validReturnDate()}
+                  error={validReturnDate}
                 />
                 : null}
               </div>
-              {invalidDates ? <p className="text-danger px-1">The departure date must be before the return date.</p>
+              {invalidDateOrder ? <p className="text-danger px-1">The departure date must be before the return date.</p>
               : null}
             </div>
             <div className="form-row">
               <div className="form-group col-md-4">
-                <TextField
-                  id="standard-select-tickets"
-                  select
-                  label="Number of Tickets"
-                  value={this.state.tickets}
-                  onChange={this.handleChange('tickets')}
-                  SelectProps={{
-                    MenuProps: {
-                      className: "test",
-                    },
-                  }}
-                  margin="normal"
-                  helperText="Please select an amount of tickets"
-                >
+                <FormControl style={cssStyles}>
+                  <InputLabel htmlFor="tickets-simple">Number of Tickets</InputLabel>
+                  <Select
+                    value={this.state.tickets}
+                    onChange={this.handleChange('tickets')}
+                    inputProps={{
+                      name: "tickets",
+                      id: "tickets-simple"
+                    }}
+                  >
                   {this.ticketsNum.map(option => (
                     <MenuItem key={option.value} value={option.value}>
                       {option.label}
                     </MenuItem>
                   ))}
-                </TextField>
+                  </Select>
+                </FormControl>
               </div>
             </div>
             <div className="form-row">
               <div className="form-group col-md-4">
-                <Button variant="outlined">
+                <Button variant="outlined" disabled={formStatus} type="submit">
                   Search
                 </Button>
               </div>
