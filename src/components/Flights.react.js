@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const cssStyles = {
   minWidth: 180
@@ -18,6 +19,7 @@ export default class Flights extends React.Component {
     this.minReturnDate = new Date();
     this.minReturnDate.setDate(this.minReturnDate.getDate() + 1);
     this.minReturnDate = this.minReturnDate.toISOString().slice(0,10);
+    this.flightLength = Math.floor(Math.random() * 41) + 40;
 
     this.state = {
       toLocation: '',
@@ -26,7 +28,10 @@ export default class Flights extends React.Component {
       returnFlightType: true,
       oneWayFlightType: false,
       departureDate: this.minDate,
-      returnDate: this.minReturnDate
+      returnDate: this.minReturnDate,
+      displayResults: false,
+      loadingScreen: false,
+      displayDepartureResults: false
     };
 
 
@@ -112,7 +117,236 @@ export default class Flights extends React.Component {
   submitForm(e) {
     e.preventDefault();
     console.log('submit da form');
+
+    this.setState({displayResults : true});
+    this.setState({loadingScreen : true});
+
+    setTimeout(function(e) {
+      this.setState({loadingScreen : false});
+      this.setState({displayDepartureResults : true});
+    }.bind(this), 3000);
   }
+
+getDepartureFlightStatus(obj) {
+  const departureTimes = [6, 10, 14, 18, 22];
+
+  const flightLength = this.flightLength;
+  const flightInfo = obj;
+
+  const departureDate = flightInfo.departureDate;
+  const returnDate = flightInfo.returnDate;
+
+  const fromLocation = flightInfo.fromLocation;
+  const toLocation = flightInfo.toLocation;
+
+  const ticketsAmt = flightInfo.ticketsAmt;
+
+  const flightTime6 = departureTimes[0];
+  const departureTime6 = this.getDepartureTime(departureDate, flightTime6);
+
+  const flightTime10 = departureTimes[1];
+  const departureTime10 = this.getDepartureTime(departureDate, flightTime10);
+
+  const flightTime14 = departureTimes[2];
+  const departureTime14 = this.getDepartureTime(departureDate, flightTime14);
+
+  const flightTime18 = departureTimes[3];
+  const departureTime18 = this.getDepartureTime(departureDate, flightTime18);
+
+  const flightTime22 = departureTimes[4];
+  const departureTime22 = this.getDepartureTime(departureDate, flightTime22);
+
+  const flightObj = [
+    this.createFlightObj(this.getFlightId(fromLocation, 1, toLocation, departureDate),
+      toLocation,
+      fromLocation,
+      this.getArrivalTime(departureTime6, flightTime6, flightLength),
+      this.getDepartureTime(departureDate, flightTime6),
+      flightLength,
+      this.calculateFlightPrice(this.getDepartureTime(departureDate , flightTime6)),
+      ticketsAmt
+    ),
+    this.createFlightObj(this.getFlightId(fromLocation, 2, toLocation, departureDate),
+      toLocation,
+      fromLocation,
+      this.getArrivalTime(departureTime10, flightTime10, flightLength),
+      this.getDepartureTime(departureDate, flightTime10),
+      flightLength,
+      this.calculateFlightPrice(this.getDepartureTime(departureDate , flightTime10)),
+      ticketsAmt
+    ),
+    this.createFlightObj(this.getFlightId(fromLocation, 3, toLocation, departureDate),
+      toLocation,
+      fromLocation,
+      this.getArrivalTime(departureTime14, flightTime14, flightLength),
+      this.getDepartureTime(departureDate, flightTime14),
+      flightLength,
+      this.calculateFlightPrice(this.getDepartureTime(departureDate, flightTime14)),
+      ticketsAmt
+    ),
+    this.createFlightObj(this.getFlightId(fromLocation, 4, toLocation, departureDate),
+      toLocation,
+      fromLocation,
+      this.getArrivalTime(departureTime18, flightTime18, flightLength),
+      this.getDepartureTime(departureDate, flightTime18),
+      flightLength,
+      this.calculateFlightPrice(this.getDepartureTime(departureDate, flightTime18)),
+      ticketsAmt
+    ),
+    this.createFlightObj(this.getFlightId(fromLocation, 5, toLocation, departureDate),
+      toLocation,
+      fromLocation,
+      this.getArrivalTime(departureTime22, flightTime22, flightLength),
+      this.getDepartureTime(departureDate, flightTime22),
+      flightLength,
+      this.calculateFlightPrice(this.getDepartureTime(departureDate, flightTime22)),
+      ticketsAmt
+    ) ];
+
+  return flightObj;
+}
+
+getReturnFlightStatus(obj): object {
+  const returnTimes = [7, 11, 15, 19, 23];
+
+  const flightLength = this.flightLength;
+  const flightInfo = obj;
+
+  const departureDate = flightInfo.departureDate;
+  const returnDate = flightInfo.returnDate;
+
+  const fromLocation = flightInfo.toLocation;
+  const toLocation = flightInfo.fromLocation;
+
+  const ticketsAmt = flightInfo.ticketsAmt;
+
+  const flightTime7 = returnTimes[0];
+  const departureTime7 = this.getDepartureTime(returnDate, flightTime7);
+
+  const flightTime11 = returnTimes[1];
+  const departureTime11 = this.getDepartureTime(returnDate, flightTime11);
+
+  const flightTime15 = returnTimes[2];
+  const departureTime15 = this.getDepartureTime(returnDate, flightTime15);
+
+  const flightTime19 = returnTimes[3];
+  const departureTime19 = this.getDepartureTime(returnDate, flightTime19);
+
+  const flightTime23 = returnTimes[4];
+  const departureTime23 = this.getDepartureTime(returnDate, flightTime23);
+
+  const flightObj = [
+    this.createFlightObj(this.getFlightId(fromLocation, 1, toLocation, returnDate),
+      toLocation,
+      fromLocation,
+      this.getArrivalTime(departureTime7, flightTime7, flightLength),
+      this.getDepartureTime(returnDate, flightTime7),
+      flightLength,
+      this.calculateFlightPrice(this.getDepartureTime(returnDate, flightTime7)),
+      ticketsAmt
+    ),
+    this.createFlightObj(this.getFlightId(fromLocation, 2, toLocation, returnDate),
+      toLocation,
+      fromLocation,
+      this.getArrivalTime(departureTime11, flightTime11, flightLength),
+      this.getDepartureTime(returnDate , flightTime11),
+      flightLength,
+      this.calculateFlightPrice(this.getDepartureTime(returnDate , flightTime11)),
+      ticketsAmt
+    ),
+    this.createFlightObj(this.getFlightId(fromLocation, 3, toLocation, returnDate),
+      toLocation,
+      fromLocation,
+      this.getArrivalTime(departureTime15, flightTime15, flightLength),
+      this.getDepartureTime(returnDate, flightTime15),
+      flightLength,
+      this.calculateFlightPrice(this.getDepartureTime(returnDate, flightTime15)),
+      ticketsAmt
+    ),
+    this.createFlightObj(this.getFlightId(fromLocation, 4, toLocation, returnDate),
+      toLocation,
+      fromLocation,
+      this.getArrivalTime(departureTime19, flightTime19, flightLength),
+      this.getDepartureTime(returnDate, flightTime19),
+      flightLength,
+      this.calculateFlightPrice(this.getDepartureTime(returnDate, flightTime19)),
+      ticketsAmt
+    ),
+    this.createFlightObj(this.getFlightId(fromLocation, 5, toLocation, returnDate),
+      toLocation,
+      fromLocation,
+      this.getArrivalTime(departureTime23, flightTime23, flightLength),
+      this.getDepartureTime(returnDate, flightTime23),
+      flightLength,
+      this.calculateFlightPrice(this.getDepartureTime(returnDate, flightTime23)),
+      ticketsAmt
+    ) ];
+
+  return flightObj;
+}
+
+createFlightObj(flightId, toLocation, fromLocation, arrivalTime,
+  departureTime, flightTimeLength, flightPrice, ticketsAmt) {
+    const flightObj = {
+    'flightId' : flightId,
+    'arrivalLocation' : toLocation,
+    'departureLocation' : fromLocation,
+    'arrivalTime' : arrivalTime,
+    'departureTime' : departureTime,
+    'flightTimeLength' : flightTimeLength,
+    'flightPrice' : flightPrice,
+    'ticketsAmt' : ticketsAmt
+    };
+  return flightObj;
+}
+
+getDepartureTime(date, hours) {
+  const dateOut = new Date(date);
+  dateOut.setHours(hours, 0, 0);
+  return dateOut;
+}
+
+getArrivalTime(departureDate, departHour, flightLength) {
+  if (!departureDate) { return; }
+
+  const date = departureDate;
+  date.setHours(date.getHours() + flightLength);
+  return date;
+}
+
+getFlightId(fromLocation, flightNumber, toLocation, departureDate) {
+  const flightId = fromLocation.substring(0, 2).toUpperCase() + '-' + flightNumber + '-' + toLocation.substring(0, 2).toUpperCase()
+  + '-' + departureDate.getMonth() + departureDate.getDate() + departureDate.getFullYear().toString().substring(2, 4);
+
+  return flightId;
+}
+
+calculateFlightPrice(departureDate) {
+  let price = 100;
+
+  // Calculate price based on departure day of week
+  if ( departureDate.getDay() <= 2 ) {
+    price = price * 1.1;
+  } else if ( departureDate.getDay() >= 3 && departureDate.getDay() >= 5 ) {
+    price = price * 1.5;
+  } else {
+    price = price * 1.25;
+  }
+
+  // Calculate price based on departure arrivalTimes
+  if ( departureDate.getHours() <= 8  ) {
+    price = price * 0.8;
+  } else if ( departureDate.getHours() <= 9 && departureDate.getHours() <= 14 ) {
+    price = price * 1.4;
+  } else if ( departureDate.getHours() <= 15 && departureDate.getHours() <= 23 ) {
+    price = price * 1.15;
+  }
+
+  // round price to 2 decimals
+  price = +price.toFixed(2);
+
+  return price;
+}
 
   render() {
     //Need getTime Equivalent variables for compraison/validation
@@ -136,23 +370,43 @@ export default class Flights extends React.Component {
 
     return (
       <div>
-        <form onSubmit={this.submitForm}>
-          <div>
-            <h1>Flights</h1>
-            <div className="btn-group pb-1" role="group" aria-label="Navigation buttons" >
-              <button type="button" className={this.state.returnFlightType ? 'btn btn-secondary active' : 'btn btn-secondary'} aria-pressed="true" onClick={this.changeFlightTypeReturn.bind(this)}>Return</button>
-              <button type="button" className={this.state.oneWayFlightType ? 'btn btn-secondary active' : 'btn btn-secondary'} aria-pressed="true" onClick={this.changeFlightTypeOneWay.bind(this)}>One-Way</button>
-            </div>
-            <div className="form-row">
-              <div className="form-group col-md-4">
+        <form onSubmit={this.submitForm.bind(this)}>
+          {!this.state.loadingScreen && !this.state.displayDepartureResults ?
+            <div>
+              <h1>Flights</h1>
+              <div className="btn-group pb-1" role="group" aria-label="Navigation buttons" >
+                <button type="button" className={this.state.returnFlightType ? 'btn btn-secondary active' : 'btn btn-secondary'} aria-pressed="true" onClick={this.changeFlightTypeReturn.bind(this)}>Return</button>
+                <button type="button" className={this.state.oneWayFlightType ? 'btn btn-secondary active' : 'btn btn-secondary'} aria-pressed="true" onClick={this.changeFlightTypeOneWay.bind(this)}>One-Way</button>
+              </div>
+              <div className="form-row">
+                <div className="form-group col-md-4">
+                  <FormControl  style={cssStyles}>
+                    <InputLabel htmlFor="from-simple">To</InputLabel>
+                    <Select
+                      value={this.state.toLocation}
+                      onChange={this.handleChange('toLocation')}
+                      inputProps={{
+                        name: "to",
+                        id: "to-simple"
+                      }}
+                    >
+                    {this.locations.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                    </Select>
+                  </FormControl>
+                </div>
+                <div className="form-group col-md-4">
                 <FormControl  style={cssStyles}>
-                  <InputLabel htmlFor="from-simple">To</InputLabel>
+                  <InputLabel htmlFor="from-simple">From</InputLabel>
                   <Select
-                    value={this.state.toLocation}
-                    onChange={this.handleChange('toLocation')}
+                    value={this.state.fromLocation}
+                    onChange={this.handleChange('fromLocation')}
                     inputProps={{
-                      name: "to",
-                      id: "to-simple"
+                      name: "from",
+                      id: "from-simple"
                     }}
                   >
                   {this.locations.map(option => (
@@ -162,91 +416,85 @@ export default class Flights extends React.Component {
                   ))}
                   </Select>
                 </FormControl>
+                </div>
+                { invalidLocations ?
+                  <p className="text-danger px-1">The locations cant match, please ensure that they are different.</p>
+                : null }
               </div>
-              <div className="form-group col-md-4">
-              <FormControl  style={cssStyles}>
-                <InputLabel htmlFor="from-simple">From</InputLabel>
-                <Select
-                  value={this.state.fromLocation}
-                  onChange={this.handleChange('fromLocation')}
-                  inputProps={{
-                    name: "from",
-                    id: "from-simple"
-                  }}
-                >
-                {this.locations.map(option => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-                </Select>
-              </FormControl>
-              </div>
-              { invalidLocations ?
-                <p className="text-danger px-1">The locations cant match, please ensure that they are different.</p>
-              : null }
-            </div>
-            <div className="form-row">
-              <div className="form-group col-md-4">
-                <TextField
-                  id="departure-date"
-                  label="Departure Date"
-                  type="date"
-                  defaultValue={this.minDate}
-                  onChange={this.handleChange('departureDate')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  error={validDepartureDate}
-                />
-              </div>
-              <div className="form-group col-md-4">
-              {!this.state.oneWayFlightType ?
-                <TextField
-                  id="return-date"
-                  label="Return Date"
-                  type="date"
-                  defaultValue={this.minReturnDate}
-                  onChange={this.handleChange('returnDate')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  error={validReturnDate}
-                />
+              <div className="form-row">
+                <div className="form-group col-md-4">
+                  <TextField
+                    id="departure-date"
+                    label="Departure Date"
+                    type="date"
+                    defaultValue={this.minDate}
+                    onChange={this.handleChange('departureDate')}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={validDepartureDate}
+                  />
+                </div>
+                <div className="form-group col-md-4">
+                {!this.state.oneWayFlightType ?
+                  <TextField
+                    id="return-date"
+                    label="Return Date"
+                    type="date"
+                    defaultValue={this.minReturnDate}
+                    onChange={this.handleChange('returnDate')}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={validReturnDate}
+                  />
+                  : null}
+                </div>
+                {invalidDateOrder ? <p className="text-danger px-1">The departure date must be before the return date.</p>
                 : null}
               </div>
-              {invalidDateOrder ? <p className="text-danger px-1">The departure date must be before the return date.</p>
-              : null}
-            </div>
-            <div className="form-row">
-              <div className="form-group col-md-4">
-                <FormControl style={cssStyles}>
-                  <InputLabel htmlFor="tickets-simple">Number of Tickets</InputLabel>
-                  <Select
-                    value={this.state.tickets}
-                    onChange={this.handleChange('tickets')}
-                    inputProps={{
-                      name: "tickets",
-                      id: "tickets-simple"
-                    }}
-                  >
-                  {this.ticketsNum.map(option => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                  </Select>
-                </FormControl>
+              <div className="form-row">
+                <div className="form-group col-md-4">
+                  <FormControl style={cssStyles}>
+                    <InputLabel htmlFor="tickets-simple">Number of Tickets</InputLabel>
+                    <Select
+                      value={this.state.tickets}
+                      onChange={this.handleChange('tickets')}
+                      inputProps={{
+                        name: "tickets",
+                        id: "tickets-simple"
+                      }}
+                    >
+                    {this.ticketsNum.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group col-md-4">
+                  <Button variant="outlined" disabled={formStatus} type="submit">
+                    Search
+                  </Button>
+                </div>
               </div>
             </div>
-            <div className="form-row">
-              <div className="form-group col-md-4">
-                <Button variant="outlined" disabled={formStatus} type="submit">
-                  Search
-                </Button>
-              </div>
+          : null}
+          {this.state.loadingScreen ?
+            <div>
+              <h1>Loading Flights...</h1>
+               <LinearProgress />
             </div>
-          </div>
+          : null}
+
+          {this.state.displayDepartureResults ?
+            <div>
+              <h1> Please pick a departure flight! </h1>
+            </div>
+          : null}
         </form>
       </div>
     );
