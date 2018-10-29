@@ -126,8 +126,6 @@ export default class Flights extends React.Component {
   submitForm(e) {
     e.preventDefault();
 
-    const data = new FormData(e.target);
-
     this.departureflightResults = this.getDepartureFlightStatus();
 
     this.setState({displayResults : true});
@@ -164,10 +162,8 @@ getDepartureFlightStatus() {
   const departureTimes = [6, 10, 14, 18, 22];
 
   const flightLength = this.flightLength;
-  //const flightInfo = obj;
 
   const departureDate = this.state.departureDate;
-  const returnDate = this.state.returnDate;
 
   const fromLocation = this.state.fromLocation;
   const toLocation = this.state.toLocation;
@@ -243,9 +239,7 @@ getReturnFlightStatus() {
   const returnTimes = [7, 11, 15, 19, 23];
 
   const flightLength = this.flightLength;
-  //const flightInfo = obj;
 
-  const departureDate = this.state.departureDate;
   const returnDate = this.state.returnDate;
 
   const fromLocation = this.state.toLocation;
@@ -397,14 +391,9 @@ calculateFlightCosts() {
     const returnFlightCost = this.flightData[1] ? this.flightData[1].flightPrice : 0;
     const ticketsAmt = this.state.ticketsAmt;
 
-    console.log('cfc', departureFlightCost, returnFlightCost, ticketsAmt);
-
     this.totalFlightsSubtotal = (departureFlightCost + returnFlightCost) * ticketsAmt;
     this.totalFlightsTaxtotal = (+this.totalFlightsSubtotal) * taxAmt;
     this.totalFlightsCost = (Math.round(this.totalFlightsSubtotal * 100) / 100)  + (Math.round(this.totalFlightsTaxtotal * 100) / 100);
-    console.log('totalFlightsSubtotal', this.totalFlightsSubtotal);
-    console.log('totalFlighsTaxtotal', this.totalFlightsTaxtotal);
-    console.log('totalFlightsCost', this.totalFlightsCost);
   }
 
   render() {
@@ -593,10 +582,10 @@ calculateFlightCosts() {
               <h1>Congrats for your booking!</h1>
               <ul className="list-group">
               {
-                this.flightData.map(res =>
+                this.flightData.map((res, index) =>
                   <li className="list-group-item" key={res.flightId}>
-                    <h2>Departure Flight:</h2>
-                    <h2>Return Flight:</h2>
+                    {index === 0 ? <h2>Departure Flight:</h2> : null }
+                    {index === 1 ? <h2>Return Flight:</h2> : null }
                     <p> <span className="font-weight-bold">Flight Id: {res.flightId}</span></p>
                     <p> <span className="font-weight-bold">Number of Tickets: {res.ticketsAmt}</span></p>
                     <p> <span className="font-weight-bold">{res.departureLocation}res</span> to <span className="font-weight-bold">{res.arrivalLocation}</span> - <span className="font-weight-bold">Trip Length:</span> { res.flightTimeLength } Hours </p>
