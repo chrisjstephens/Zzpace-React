@@ -6,6 +6,8 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import DateFormat from 'dateformat';
+import NumberFormat from 'react-number-format';
 
 const cssStyles = {
   minWidth: 180
@@ -24,15 +26,22 @@ export default class Flights extends React.Component {
     this.state = {
       toLocation: '',
       fromLocation: '',
-      tickets: '',
+      ticketsAmt: '',
       returnFlightType: true,
       oneWayFlightType: false,
       departureDate: this.minDate,
       returnDate: this.minReturnDate,
       displayResults: false,
+      displayArrivalResults: false,
       loadingScreen: false,
-      displayDepartureResults: false
+      displayDepartureResults: false,
+      displayFlightPicked: false,
+      flighData: []
     };
+
+    this.totalFlightsSubtotal = 0;
+    this.totalFlightsTaxtotal = 0;
+    this.totalFlightsCost = 0;
 
 
     this.locations = [
@@ -116,7 +125,10 @@ export default class Flights extends React.Component {
 
   submitForm(e) {
     e.preventDefault();
-    console.log('submit da form');
+
+    const data = new FormData(e.target);
+
+    this.departureflightResults = this.getDepartureFlightStatus();
 
     this.setState({displayResults : true});
     this.setState({loadingScreen : true});
@@ -127,19 +139,40 @@ export default class Flights extends React.Component {
     }.bind(this), 3000);
   }
 
-getDepartureFlightStatus(obj) {
+  pickDepartureFlight(res) {
+      this.setState({displayDepartureResults : false});
+
+      this.flightData = [ res ];
+
+      if (this.state.returnFlightType) {
+        this.setState({loadingScreen : true});
+        setTimeout(function(e) {
+          this.setState({loadingScreen : false});
+          this.setState({displayArrivalResults : true});
+        }.bind(this), 3000);
+
+        this.returnFlightResults = this.getReturnFlightStatus();
+      } else {
+        this.calculateFlightCosts();
+        this.setState({displayArrivalResults : false});
+        this.setState({displayFlightPicked : true});
+      }
+
+    }
+
+getDepartureFlightStatus() {
   const departureTimes = [6, 10, 14, 18, 22];
 
   const flightLength = this.flightLength;
-  const flightInfo = obj;
+  //const flightInfo = obj;
 
-  const departureDate = flightInfo.departureDate;
-  const returnDate = flightInfo.returnDate;
+  const departureDate = this.state.departureDate;
+  const returnDate = this.state.returnDate;
 
-  const fromLocation = flightInfo.fromLocation;
-  const toLocation = flightInfo.toLocation;
+  const fromLocation = this.state.fromLocation;
+  const toLocation = this.state.toLocation;
 
-  const ticketsAmt = flightInfo.ticketsAmt;
+  const ticketsAmt = this.state.ticketsAmt;
 
   const flightTime6 = departureTimes[0];
   const departureTime6 = this.getDepartureTime(departureDate, flightTime6);
@@ -206,19 +239,19 @@ getDepartureFlightStatus(obj) {
   return flightObj;
 }
 
-getReturnFlightStatus(obj): object {
+getReturnFlightStatus() {
   const returnTimes = [7, 11, 15, 19, 23];
 
   const flightLength = this.flightLength;
-  const flightInfo = obj;
+  //const flightInfo = obj;
 
-  const departureDate = flightInfo.departureDate;
-  const returnDate = flightInfo.returnDate;
+  const departureDate = this.state.departureDate;
+  const returnDate = this.state.returnDate;
 
-  const fromLocation = flightInfo.toLocation;
-  const toLocation = flightInfo.fromLocation;
+  const fromLocation = this.state.toLocation;
+  const toLocation = this.state.fromLocation;
 
-  const ticketsAmt = flightInfo.ticketsAmt;
+  const ticketsAmt = this.state.ticketsAmt;
 
   const flightTime7 = returnTimes[0];
   const departureTime7 = this.getDepartureTime(returnDate, flightTime7);
@@ -301,7 +334,7 @@ createFlightObj(flightId, toLocation, fromLocation, arrivalTime,
 }
 
 getDepartureTime(date, hours) {
-  const dateOut = new Date(date);
+  let dateOut = new Date(date);
   dateOut.setHours(hours, 0, 0);
   return dateOut;
 }
@@ -315,8 +348,9 @@ getArrivalTime(departureDate, departHour, flightLength) {
 }
 
 getFlightId(fromLocation, flightNumber, toLocation, departureDate) {
+  let departureDateNew = new Date(departureDate);
   const flightId = fromLocation.substring(0, 2).toUpperCase() + '-' + flightNumber + '-' + toLocation.substring(0, 2).toUpperCase()
-  + '-' + departureDate.getMonth() + departureDate.getDate() + departureDate.getFullYear().toString().substring(2, 4);
+  + '-' + departureDateNew.getMonth() + departureDateNew.getDate() + departureDateNew.getFullYear().toString().substring(2, 4);
 
   return flightId;
 }
@@ -348,6 +382,31 @@ calculateFlightPrice(departureDate) {
   return price;
 }
 
+pickReturnFlight(flightReturnData) {
+    this.setState({displayArrivalResults : false});
+    this.setState({displayFlightPicked : true});
+
+    this.flightData.push(flightReturnData);
+
+    this.calculateFlightCosts();
+  }
+
+calculateFlightCosts() {
+    const taxAmt = 0.15;
+    const departureFlightCost = this.flightData[0].flightPrice ? this.flightData[0].flightPrice : 0;
+    const returnFlightCost = this.flightData[1] ? this.flightData[1].flightPrice : 0;
+    const ticketsAmt = this.state.ticketsAmt;
+
+    console.log('cfc', departureFlightCost, returnFlightCost, ticketsAmt);
+
+    this.totalFlightsSubtotal = (departureFlightCost + returnFlightCost) * ticketsAmt;
+    this.totalFlightsTaxtotal = (+this.totalFlightsSubtotal) * taxAmt;
+    this.totalFlightsCost = (Math.round(this.totalFlightsSubtotal * 100) / 100)  + (Math.round(this.totalFlightsTaxtotal * 100) / 100);
+    console.log('totalFlightsSubtotal', this.totalFlightsSubtotal);
+    console.log('totalFlighsTaxtotal', this.totalFlightsTaxtotal);
+    console.log('totalFlightsCost', this.totalFlightsCost);
+  }
+
   render() {
     //Need getTime Equivalent variables for compraison/validation
     const departureDate = new Date(this.state.departureDate).getTime();
@@ -364,14 +423,14 @@ calculateFlightPrice(departureDate) {
     const defaultLocations = (this.state.toLocation && this.state.fromLocation) ? true : false;
     const invalidLocations = defaultLocations && (this.state.toLocation === this.state.fromLocation) ? true : false;
 
-    const validTickets = this.state.tickets >= 1;
+    const validTickets = this.state.ticketsAmt >= 1;
 
     const formStatus = !(!invalidDates && !invalidLocations && validTickets);
 
     return (
       <div>
         <form onSubmit={this.submitForm.bind(this)}>
-          {!this.state.loadingScreen && !this.state.displayDepartureResults ?
+          {!this.state.loadingScreen && !this.state.displayDepartureResults && !this.state.displayArrivalResults && !this.state.displayFlightPicked ?
             <div>
               <h1>Flights</h1>
               <div className="btn-group pb-1" role="group" aria-label="Navigation buttons" >
@@ -458,8 +517,8 @@ calculateFlightPrice(departureDate) {
                   <FormControl style={cssStyles}>
                     <InputLabel htmlFor="tickets-simple">Number of Tickets</InputLabel>
                     <Select
-                      value={this.state.tickets}
-                      onChange={this.handleChange('tickets')}
+                      value={this.state.ticketsAmt}
+                      onChange={this.handleChange('ticketsAmt')}
                       inputProps={{
                         name: "tickets",
                         id: "tickets-simple"
@@ -489,10 +548,72 @@ calculateFlightPrice(departureDate) {
                <LinearProgress />
             </div>
           : null}
-
           {this.state.displayDepartureResults ?
             <div>
               <h1> Please pick a departure flight! </h1>
+              <ul className="list-group">
+                {
+                  this.departureflightResults.map(res =>
+                  <li className="list-group-item" key={res.flightId}>
+                    <p> <span className="font-weight-bold"> {res.flightId} </span> </p>
+                    <p> <span className="font-weight-bold"> {res.departureLocation} </span> to <span className="font-weight-bold"> {res.arrivalLocation} </span> - <span className="font-weight-bold">Trip Length:</span> {res.flightTimeLength} Hours </p>
+                    <p className="mb-1"><span className="font-weight-bold">Departure:</span> {DateFormat(res.departureTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
+                    <p className="mb-1"><span className="font-weight-bold">Arrival:</span> {DateFormat(res.arrivalTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
+                    <br/>
+                    <span className="font-weight-bold">Price:</span> <NumberFormat value={res.flightPrice} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} />
+                    <button type="button" className="btn btn-primary float-right" onClick={this.pickDepartureFlight.bind(this, res)}>Select</button>
+                  </li>
+                  )
+                }
+              </ul>
+            </div>
+          : null}
+          {this.state.returnFlightType && this.state.displayArrivalResults ?
+            <div>
+              <h1> Please pick a return flight! </h1>
+              <ul className="list-group">
+                {
+                  this.returnFlightResults.map(res =>
+                  <li className="list-group-item" key={res.flightId}>
+                    <p> <span className="font-weight-bold"> {res.flightId} </span> </p>
+                    <p> <span className="font-weight-bold"> {res.departureLocation} </span> to <span className="font-weight-bold"> {res.arrivalLocation} </span> - <span className="font-weight-bold">Trip Length:</span> {res.flightTimeLength} Hours </p>
+                    <p className="mb-1"><span className="font-weight-bold">Departure:</span> {DateFormat(res.departureTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
+                    <p className="mb-1"><span className="font-weight-bold">Arrival:</span> {DateFormat(res.arrivalTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
+                    <br/>
+                    <span className="font-weight-bold">Price:</span> <NumberFormat value={res.flightPrice} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} />
+                    <button type="button" className="btn btn-primary float-right" onClick={this.pickReturnFlight.bind(this, res)}>Select</button>
+                  </li>
+                  )
+                }
+              </ul>
+            </div>
+          : null }
+          { this.state.displayFlightPicked ?
+            <div>
+              <h1>Congrats for your booking!</h1>
+              <ul className="list-group">
+              {
+                this.flightData.map(res =>
+                  <li className="list-group-item" key={res.flightId}>
+                    <h2>Departure Flight:</h2>
+                    <h2>Return Flight:</h2>
+                    <p> <span className="font-weight-bold">Flight Id: {res.flightId}</span></p>
+                    <p> <span className="font-weight-bold">Number of Tickets: {res.ticketsAmt}</span></p>
+                    <p> <span className="font-weight-bold">{res.departureLocation}res</span> to <span className="font-weight-bold">{res.arrivalLocation}</span> - <span className="font-weight-bold">Trip Length:</span> { res.flightTimeLength } Hours </p>
+                    <p className="mb-1"><span className="font-weight-bold">Departure:</span> {DateFormat(res.departureTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
+                    <p className="mb-1"><span className="font-weight-bold">Arrival:</span> {DateFormat(res.arrivalTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
+                    <br/>
+                    <span className="font-weight-bold">Price per ticket:</span> <NumberFormat value={res.flightPrice} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} />
+                  </li>
+                )
+              }
+              <li className="list-group-item">
+              <p>Subtotal: <NumberFormat value={this.totalFlightsSubtotal} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
+              <p>Tax: <NumberFormat value={this.totalFlightsTaxtotal} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
+              <p>Total Price: <NumberFormat value={this.totalFlightsCost} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
+              <p>Thank you for flying with Zzpace!</p>
+              </li>
+              </ul>
             </div>
           : null}
         </form>
