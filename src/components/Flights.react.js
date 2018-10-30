@@ -106,11 +106,13 @@ export default class Flights extends React.Component {
   };
 
   changeFlightTypeReturn() {
+    //Switch used to change the initial form from Return to One-Way
     this.setState({returnFlightType : true});
     this.setState({oneWayFlightType : false});
   }
 
   changeFlightTypeOneWay() {
+    //Switch used to change the initial form from One-Way to Return
     this.setState({returnFlightType : false});
     this.setState({oneWayFlightType : true});
   }
@@ -546,8 +548,8 @@ calculateFlightCosts() {
                   <li className="list-group-item" key={res.flightId}>
                     <p> <span className="font-weight-bold"> {res.flightId} </span> </p>
                     <p> <span className="font-weight-bold"> {res.departureLocation} </span> to <span className="font-weight-bold"> {res.arrivalLocation} </span> - <span className="font-weight-bold">Trip Length:</span> {res.flightTimeLength} Hours </p>
-                    <p className="mb-1"><span className="font-weight-bold">Departure:</span> {DateFormat(res.departureTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
-                    <p className="mb-1"><span className="font-weight-bold">Arrival:</span> {DateFormat(res.arrivalTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
+                    <p className="mb-1"><span className="font-weight-bold">Departure:</span> {DateFormat(res.departureTime, "mmm dd, yyyy, h:MM:ss TT")} </p>
+                    <p className="mb-1"><span className="font-weight-bold">Arrival:</span> {DateFormat(res.arrivalTime, "mmm dd, yyyy, h:MM:ss TT")} </p>
                     <br/>
                     <span className="font-weight-bold">Price:</span> <NumberFormat value={res.flightPrice} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} />
                     <button type="button" className="btn btn-primary float-right" onClick={this.pickDepartureFlight.bind(this, res)}>Select</button>
@@ -566,8 +568,8 @@ calculateFlightCosts() {
                   <li className="list-group-item" key={res.flightId}>
                     <p> <span className="font-weight-bold"> {res.flightId} </span> </p>
                     <p> <span className="font-weight-bold"> {res.departureLocation} </span> to <span className="font-weight-bold"> {res.arrivalLocation} </span> - <span className="font-weight-bold">Trip Length:</span> {res.flightTimeLength} Hours </p>
-                    <p className="mb-1"><span className="font-weight-bold">Departure:</span> {DateFormat(res.departureTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
-                    <p className="mb-1"><span className="font-weight-bold">Arrival:</span> {DateFormat(res.arrivalTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
+                    <p className="mb-1"><span className="font-weight-bold">Departure:</span> {DateFormat(res.departureTime, "mmm dd, yyyy, h:MM:ss TT")} </p>
+                    <p className="mb-1"><span className="font-weight-bold">Arrival:</span> {DateFormat(res.arrivalTime, "mmm dd, yyyy, h:MM:ss TT")} </p>
                     <br/>
                     <span className="font-weight-bold">Price:</span> <NumberFormat value={res.flightPrice} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} />
                     <button type="button" className="btn btn-primary float-right" onClick={this.pickReturnFlight.bind(this, res)}>Select</button>
@@ -589,8 +591,8 @@ calculateFlightCosts() {
                     <p> <span className="font-weight-bold">Flight Id: {res.flightId}</span></p>
                     <p> <span className="font-weight-bold">Number of Tickets: {res.ticketsAmt}</span></p>
                     <p> <span className="font-weight-bold">{res.departureLocation}res</span> to <span className="font-weight-bold">{res.arrivalLocation}</span> - <span className="font-weight-bold">Trip Length:</span> { res.flightTimeLength } Hours </p>
-                    <p className="mb-1"><span className="font-weight-bold">Departure:</span> {DateFormat(res.departureTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
-                    <p className="mb-1"><span className="font-weight-bold">Arrival:</span> {DateFormat(res.arrivalTime, "mmm dd, yyyy, h:mm:ss TT")} </p>
+                    <p className="mb-1"><span className="font-weight-bold">Departure:</span> {DateFormat(res.departureTime, "mmm dd, yyyy, h:MM:ss TT")} </p>
+                    <p className="mb-1"><span className="font-weight-bold">Arrival:</span> {DateFormat(res.arrivalTime, "mmm dd, yyyy, h:MM:ss TT")} </p>
                     <br/>
                     <span className="font-weight-bold">Price per ticket:</span> <NumberFormat value={res.flightPrice} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} />
                   </li>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 export default function HeaderView(props) {
   return (
@@ -11,16 +11,16 @@ export default function HeaderView(props) {
       <div className="collapse navbar-collapse" id="navbarNav" >
         <ul className="navbar-nav">
         <li className="nav-item" >
-          <Link className="nav-link"  to='/'>Home<span className="sr-only">(current)</span></Link>
+          <NavLink className="nav-link"  to='/'>Home<span className="sr-only">(current)</span></NavLink>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to='/flights'>Flights</Link>
+          <NavLink className="nav-link" activeClassName='active' to='/flights'>Flights</NavLink>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to='/hotels'>Hotels</Link>
+          <NavLink className="nav-link" to='/hotels'>Hotels</NavLink>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to='/teleportation'>Teleportation</Link>
+          <NavLink className="nav-link" to='/teleportation'>Teleportation</NavLink>
         </li>
         </ul>
       </div>
