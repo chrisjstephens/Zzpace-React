@@ -12,7 +12,7 @@ import Error from './components/Error.react.js';
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
+      <BrowserRouter basename="/projects/Zzpace-React/">
       <div className="app">
           <div className="container">
             <HeaderView/>

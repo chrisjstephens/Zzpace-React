@@ -10,7 +10,7 @@ export default function HeaderView(props) {
       </button>
       <div className="collapse navbar-collapse" id="navbarNav" >
         <ul className="navbar-nav">
-        <li className="nav-item" >
+        <li className="nav-item">
           <NavLink className="nav-link"  to='/'>Home<span className="sr-only">(current)</span></NavLink>
         </li>
         <li className="nav-item">
