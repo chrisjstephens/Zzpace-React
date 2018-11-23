@@ -406,7 +406,7 @@ calculateFlightCosts() {
     const minReturnDate = new Date(this.minReturnDate).getTime();
 
     const defaultDates = ((departureDate === minDate) && (returnDate === minReturnDate));
-    const invalidDateOrder = departureDate >= returnDate;
+    const invalidDateOrder = this.state.returnFlightType && departureDate >= returnDate;
     const validDepartureDate = departureDate < minDate;
     const validReturnDate = returnDate < minReturnDate;
     const invalidDates = !defaultDates && (invalidDateOrder || validDepartureDate);
