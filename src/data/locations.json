@@ -1,0 +1,26 @@
+[
+  {
+    "value": "Earth",
+    "label": "Earth"
+  },
+  {
+      "value": "Jupiter",
+      "label": "Jupiter"
+  },
+  {
+    "value": "Mars",
+    "label": "Mars"
+  },
+  {
+    "value": "Planet-X",
+    "label": "Planet-X"
+  },
+  {
+    "value": "Pluto",
+    "label": "Pluto"
+  },
+  {
+    "value": "Saturn",
+    "label": "Saturn"
+  }
+]

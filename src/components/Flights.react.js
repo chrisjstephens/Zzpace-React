@@ -8,6 +8,8 @@ import Select from '@material-ui/core/Select';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DateFormat from 'dateformat';
 import NumberFormat from 'react-number-format';
+import locationsData from '../data/locations.json';
+import ticketsNumData from '../data/locations.json';
 
 const cssStyles = {
   minWidth: 180
@@ -43,60 +45,8 @@ export default class Flights extends React.Component {
     this.totalFlightsTaxtotal = 0;
     this.totalFlightsCost = 0;
 
-
-    this.locations = [
-        {
-          value: "Earth",
-          label: "Earth"
-        },
-        {
-          value: "Jupiter",
-          label: "Jupiter"
-        },
-        {
-          value: "Mars",
-          label: "Mars"
-        },
-        {
-          value: "Planet-X",
-          label: "Planet-X"
-        },
-        {
-          value: "Pluto",
-          label: "Pluto"
-        },
-        {
-          value: "Saturn",
-          label: "Saturn"
-        }
-    ];
-
-    this.ticketsNum = [
-      {
-        value: 1,
-        label: "1"
-      },
-      {
-        value: 2,
-        label: "2"
-      },
-      {
-        value: 3,
-        label: "3"
-      },
-      {
-        value: 4,
-        label: "4"
-      },
-      {
-        value: 5,
-        label: "5"
-      },
-      {
-        value: 6,
-        label: "6"
-      },
-    ];
+    this.locations = locationsData;
+    this.ticketsNum = ticketsNumData;
   }
 
   handleChange = name => event => {
