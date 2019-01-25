@@ -9,7 +9,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import DateFormat from 'dateformat';
 import NumberFormat from 'react-number-format';
 import locationsData from '../data/locations.json';
-import ticketsNumData from '../data/locations.json';
+import ticketsNumData from '../data/ticketsNum.json';
 
 const cssStyles = {
   minWidth: 180
