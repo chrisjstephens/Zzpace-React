@@ -40,7 +40,8 @@ export default class Flights extends React.Component {
       displayFlightPicked: false,
       flightData: [],
       returnFlightResults: [],
-      departureFlightResults: []
+      departureFlightResults: [],
+      flightsDataError: false
     };
 
     this.totalFlightsSubtotal = 0;
@@ -87,7 +88,7 @@ export default class Flights extends React.Component {
       .then(
         (result) => this.setState({ departureFlightResults: result }),
       ).catch((error) => {
-        //TODO:Set Custom Error if can't get data from node server
+        this.setState({flightsDataError : true})
       });
 
     this.setState({displayResults : true});
@@ -118,8 +119,8 @@ export default class Flights extends React.Component {
           .then(
             (result) => this.setState({ returnFlightResults: result }),
           ).catch((error) => {
-            //TODO:Set Custom Error if can't get data from node server
-          });;
+            this.setState({flightsDataError : true})
+          });
 
       } else {
         this.calculateFlightCosts();
@@ -183,7 +184,10 @@ calculateFlightCosts() {
 
     return (
       <div>
-        <form onSubmit={this.submitForm.bind(this)}>
+        {this.state.flightsDataError ?
+          <div><h1>Sorry an error occured, please try again!</h1></div>
+        :
+         <form onSubmit={this.submitForm.bind(this)}>
           {!this.state.loadingScreen && !this.state.displayDepartureResults && !this.state.displayArrivalResults && !this.state.displayFlightPicked ?
             <div>
               <h1>Flights</h1>
@@ -371,6 +375,7 @@ calculateFlightCosts() {
             </div>
           : null}
         </form>
+        }
       </div>
     );
   }
