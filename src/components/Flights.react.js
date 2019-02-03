@@ -38,7 +38,9 @@ export default class Flights extends React.Component {
       loadingScreen: false,
       displayDepartureResults: false,
       displayFlightPicked: false,
-      flighData: []
+      flightData: [],
+      returnFlightResults: [],
+      departureFlightResults: []
     };
 
     this.totalFlightsSubtotal = 0;
@@ -78,7 +80,15 @@ export default class Flights extends React.Component {
   submitForm(e) {
     e.preventDefault();
 
-    this.departureflightResults = this.getDepartureFlightStatus();
+    const flightFormData = this.createFlightFormPostData("departure");
+
+    fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/processFlights" + flightFormData)
+      .then(res => res.json())
+      .then(
+        (result) => this.setState({ departureFlightResults: result }),
+      ).catch((error) => {
+        //TODO:Set Custom Error if can't get data from node server
+      });
 
     this.setState({displayResults : true});
     this.setState({loadingScreen : true});
@@ -101,7 +111,16 @@ export default class Flights extends React.Component {
           this.setState({displayArrivalResults : true});
         }.bind(this), 3000);
 
-        this.returnFlightResults = this.getReturnFlightStatus();
+        const flightFormData = this.createFlightFormPostData("return");
+
+        fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/processFlights" + flightFormData)
+          .then(res => res.json())
+          .then(
+            (result) => this.setState({ returnFlightResults: result }),
+          ).catch((error) => {
+            //TODO:Set Custom Error if can't get data from node server
+          });;
+
       } else {
         this.calculateFlightCosts();
         this.setState({displayArrivalResults : false});
@@ -110,224 +129,6 @@ export default class Flights extends React.Component {
 
     }
 
-getDepartureFlightStatus() {
-  const departureTimes = [6, 10, 14, 18, 22];
-
-  const flightLength = this.flightLength;
-
-  const departureDate = this.state.departureDate;
-
-  const fromLocation = this.state.fromLocation;
-  const toLocation = this.state.toLocation;
-
-  const ticketsAmt = this.state.ticketsAmt;
-
-  const flightTime6 = departureTimes[0];
-  const departureTime6 = this.getDepartureTime(departureDate, flightTime6);
-
-  const flightTime10 = departureTimes[1];
-  const departureTime10 = this.getDepartureTime(departureDate, flightTime10);
-
-  const flightTime14 = departureTimes[2];
-  const departureTime14 = this.getDepartureTime(departureDate, flightTime14);
-
-  const flightTime18 = departureTimes[3];
-  const departureTime18 = this.getDepartureTime(departureDate, flightTime18);
-
-  const flightTime22 = departureTimes[4];
-  const departureTime22 = this.getDepartureTime(departureDate, flightTime22);
-
-  const flightObj = [
-    this.createFlightObj(this.getFlightId(fromLocation, 1, toLocation, departureDate),
-      toLocation,
-      fromLocation,
-      this.getArrivalTime(departureTime6, flightTime6, flightLength),
-      this.getDepartureTime(departureDate, flightTime6),
-      flightLength,
-      this.calculateFlightPrice(this.getDepartureTime(departureDate , flightTime6)),
-      ticketsAmt
-    ),
-    this.createFlightObj(this.getFlightId(fromLocation, 2, toLocation, departureDate),
-      toLocation,
-      fromLocation,
-      this.getArrivalTime(departureTime10, flightTime10, flightLength),
-      this.getDepartureTime(departureDate, flightTime10),
-      flightLength,
-      this.calculateFlightPrice(this.getDepartureTime(departureDate , flightTime10)),
-      ticketsAmt
-    ),
-    this.createFlightObj(this.getFlightId(fromLocation, 3, toLocation, departureDate),
-      toLocation,
-      fromLocation,
-      this.getArrivalTime(departureTime14, flightTime14, flightLength),
-      this.getDepartureTime(departureDate, flightTime14),
-      flightLength,
-      this.calculateFlightPrice(this.getDepartureTime(departureDate, flightTime14)),
-      ticketsAmt
-    ),
-    this.createFlightObj(this.getFlightId(fromLocation, 4, toLocation, departureDate),
-      toLocation,
-      fromLocation,
-      this.getArrivalTime(departureTime18, flightTime18, flightLength),
-      this.getDepartureTime(departureDate, flightTime18),
-      flightLength,
-      this.calculateFlightPrice(this.getDepartureTime(departureDate, flightTime18)),
-      ticketsAmt
-    ),
-    this.createFlightObj(this.getFlightId(fromLocation, 5, toLocation, departureDate),
-      toLocation,
-      fromLocation,
-      this.getArrivalTime(departureTime22, flightTime22, flightLength),
-      this.getDepartureTime(departureDate, flightTime22),
-      flightLength,
-      this.calculateFlightPrice(this.getDepartureTime(departureDate, flightTime22)),
-      ticketsAmt
-    ) ];
-
-  return flightObj;
-}
-
-getReturnFlightStatus() {
-  const returnTimes = [7, 11, 15, 19, 23];
-
-  const flightLength = this.flightLength;
-
-  const returnDate = this.state.returnDate;
-
-  const fromLocation = this.state.toLocation;
-  const toLocation = this.state.fromLocation;
-
-  const ticketsAmt = this.state.ticketsAmt;
-
-  const flightTime7 = returnTimes[0];
-  const departureTime7 = this.getDepartureTime(returnDate, flightTime7);
-
-  const flightTime11 = returnTimes[1];
-  const departureTime11 = this.getDepartureTime(returnDate, flightTime11);
-
-  const flightTime15 = returnTimes[2];
-  const departureTime15 = this.getDepartureTime(returnDate, flightTime15);
-
-  const flightTime19 = returnTimes[3];
-  const departureTime19 = this.getDepartureTime(returnDate, flightTime19);
-
-  const flightTime23 = returnTimes[4];
-  const departureTime23 = this.getDepartureTime(returnDate, flightTime23);
-
-  const flightObj = [
-    this.createFlightObj(this.getFlightId(fromLocation, 1, toLocation, returnDate),
-      toLocation,
-      fromLocation,
-      this.getArrivalTime(departureTime7, flightTime7, flightLength),
-      this.getDepartureTime(returnDate, flightTime7),
-      flightLength,
-      this.calculateFlightPrice(this.getDepartureTime(returnDate, flightTime7)),
-      ticketsAmt
-    ),
-    this.createFlightObj(this.getFlightId(fromLocation, 2, toLocation, returnDate),
-      toLocation,
-      fromLocation,
-      this.getArrivalTime(departureTime11, flightTime11, flightLength),
-      this.getDepartureTime(returnDate , flightTime11),
-      flightLength,
-      this.calculateFlightPrice(this.getDepartureTime(returnDate , flightTime11)),
-      ticketsAmt
-    ),
-    this.createFlightObj(this.getFlightId(fromLocation, 3, toLocation, returnDate),
-      toLocation,
-      fromLocation,
-      this.getArrivalTime(departureTime15, flightTime15, flightLength),
-      this.getDepartureTime(returnDate, flightTime15),
-      flightLength,
-      this.calculateFlightPrice(this.getDepartureTime(returnDate, flightTime15)),
-      ticketsAmt
-    ),
-    this.createFlightObj(this.getFlightId(fromLocation, 4, toLocation, returnDate),
-      toLocation,
-      fromLocation,
-      this.getArrivalTime(departureTime19, flightTime19, flightLength),
-      this.getDepartureTime(returnDate, flightTime19),
-      flightLength,
-      this.calculateFlightPrice(this.getDepartureTime(returnDate, flightTime19)),
-      ticketsAmt
-    ),
-    this.createFlightObj(this.getFlightId(fromLocation, 5, toLocation, returnDate),
-      toLocation,
-      fromLocation,
-      this.getArrivalTime(departureTime23, flightTime23, flightLength),
-      this.getDepartureTime(returnDate, flightTime23),
-      flightLength,
-      this.calculateFlightPrice(this.getDepartureTime(returnDate, flightTime23)),
-      ticketsAmt
-    ) ];
-
-  return flightObj;
-}
-
-createFlightObj(flightId, toLocation, fromLocation, arrivalTime,
-  departureTime, flightTimeLength, flightPrice, ticketsAmt) {
-    const flightObj = {
-    'flightId' : flightId,
-    'arrivalLocation' : toLocation,
-    'departureLocation' : fromLocation,
-    'arrivalTime' : arrivalTime,
-    'departureTime' : departureTime,
-    'flightTimeLength' : flightTimeLength,
-    'flightPrice' : flightPrice,
-    'ticketsAmt' : ticketsAmt
-    };
-  return flightObj;
-}
-
-getDepartureTime(date, hours) {
-  let dateOut = new Date(date);
-  dateOut.setHours(hours, 0, 0);
-  return dateOut;
-}
-
-getArrivalTime(departureDate, departHour, flightLength) {
-  if (!departureDate) { return; }
-
-  const date = departureDate;
-  date.setHours(date.getHours() + flightLength);
-  return date;
-}
-
-getFlightId(fromLocation, flightNumber, toLocation, departureDate) {
-  let departureDateNew = new Date(departureDate);
-  const flightId = fromLocation.substring(0, 2).toUpperCase() + '-' + flightNumber + '-' + toLocation.substring(0, 2).toUpperCase()
-  + '-' + departureDateNew.getMonth() + departureDateNew.getDate() + departureDateNew.getFullYear().toString().substring(2, 4);
-
-  return flightId;
-}
-
-calculateFlightPrice(departureDate) {
-  let price = 100;
-
-  // Calculate price based on departure day of week
-  if ( departureDate.getDay() <= 2 ) {
-    price = price * 1.1;
-  } else if ( departureDate.getDay() >= 3 && departureDate.getDay() >= 5 ) {
-    price = price * 1.5;
-  } else {
-    price = price * 1.25;
-  }
-
-  // Calculate price based on departure arrivalTimes
-  if ( departureDate.getHours() <= 8  ) {
-    price = price * 0.8;
-  } else if ( departureDate.getHours() <= 9 && departureDate.getHours() <= 14 ) {
-    price = price * 1.4;
-  } else if ( departureDate.getHours() <= 15 && departureDate.getHours() <= 23 ) {
-    price = price * 1.15;
-  }
-
-  // round price to 2 decimals
-  price = +price.toFixed(2);
-
-  return price;
-}
-
 pickReturnFlight(flightReturnData) {
     this.setState({displayArrivalResults : false});
     this.setState({displayFlightPicked : true});
@@ -335,6 +136,18 @@ pickReturnFlight(flightReturnData) {
     this.flightData.push(flightReturnData);
 
     this.calculateFlightCosts();
+  }
+
+  createFlightFormPostData(travelType) {
+    //TODO:CHECK IF RETURNDATE IS INVALID
+    const flightParamString = '?type=' + travelType +
+                       '&toLocation=' +this.state.fromLocation +
+                       '&fromLocation=' + this.state.toLocation +
+                       '&departureDate=' + this.state.departureDate +
+                       '&returnDate=' + this.state.returnDate +
+                       '&ticketsAmt=' +this.state.ticketsAmt;
+
+    return flightParamString;
   }
 
 calculateFlightCosts() {
@@ -494,7 +307,7 @@ calculateFlightCosts() {
               <h1> Please pick a departure flight! </h1>
               <ul className="list-group">
                 {
-                  this.departureflightResults.map(res =>
+                  this.state.departureFlightResults.map(res =>
                   <li className="list-group-item" key={res.flightId}>
                     <p> <span className="font-weight-bold"> {res.flightId} </span> </p>
                     <p> <span className="font-weight-bold"> {res.departureLocation} </span> to <span className="font-weight-bold"> {res.arrivalLocation} </span> - <span className="font-weight-bold">Trip Length:</span> {res.flightTimeLength} Hours </p>
@@ -514,7 +327,7 @@ calculateFlightCosts() {
               <h1> Please pick a return flight! </h1>
               <ul className="list-group">
                 {
-                  this.returnFlightResults.map(res =>
+                  this.state.returnFlightResults.map(res =>
                   <li className="list-group-item" key={res.flightId}>
                     <p> <span className="font-weight-bold"> {res.flightId} </span> </p>
                     <p> <span className="font-weight-bold"> {res.departureLocation} </span> to <span className="font-weight-bold"> {res.arrivalLocation} </span> - <span className="font-weight-bold">Trip Length:</span> {res.flightTimeLength} Hours </p>
