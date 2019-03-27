@@ -142,11 +142,11 @@ pickReturnFlight(flightReturnData) {
   createFlightFormPostData(travelType) {
     //TODO:CHECK IF RETURNDATE IS INVALID
     const flightParamString = '?type=' + travelType +
-                       '&toLocation=' +this.state.fromLocation +
+                       '&toLocation=' + this.state.fromLocation +
                        '&fromLocation=' + this.state.toLocation +
                        '&departureDate=' + this.state.departureDate +
                        '&returnDate=' + this.state.returnDate +
-                       '&ticketsAmt=' +this.state.ticketsAmt;
+                       '&ticketsAmt=' + this.state.ticketsAmt;
 
     return flightParamString;
   }
