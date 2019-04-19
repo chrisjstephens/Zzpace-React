@@ -357,7 +357,7 @@ calculateFlightCosts() {
                     {index === 1 ? <h2>Return Flight:</h2> : null }
                     <p> <span className="font-weight-bold">Flight Id: {res.flightId}</span></p>
                     <p> <span className="font-weight-bold">Number of Tickets: {res.ticketsAmt}</span></p>
-                    <p> <span className="font-weight-bold">{res.departureLocation}res</span> to <span className="font-weight-bold">{res.arrivalLocation}</span> - <span className="font-weight-bold">Trip Length:</span> { res.flightTimeLength } Hours </p>
+                    <p> <span className="font-weight-bold">{res.departureLocation}</span> to <span className="font-weight-bold">{res.arrivalLocation}</span> - <span className="font-weight-bold">Trip Length:</span> { res.flightTimeLength } Hours </p>
                     <p className="mb-1"><span className="font-weight-bold">Departure:</span> {DateFormat(res.departureTime, "mmm dd, yyyy, h:MM:ss TT")} </p>
                     <p className="mb-1"><span className="font-weight-bold">Arrival:</span> {DateFormat(res.arrivalTime, "mmm dd, yyyy, h:MM:ss TT")} </p>
                     <br/>
