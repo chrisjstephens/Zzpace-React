@@ -27,18 +27,18 @@ export default class HeaderView extends React.Component {
         </button>
         <div className={(navCollapsed ? 'collapse navbar-collapse' : 'navbar-collapse')} id="navbarNav">
           <ul className="navbar-nav">
-          <li className="nav-item">
-            <NavLink className="nav-link"  to='/'>Home<span className="sr-only">(current)</span></NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" activeClassName='active' to='/flights'>Flights</NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to='/hotels'>Hotels</NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to='/teleportation'>Teleportation</NavLink>
-          </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" activeClassName='active' to='/' exact={true}>Home<span className="sr-only">(current)</span></NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" activeClassName='active' to='/flights'>Flights</NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" activeClassName='active' to='/hotels'>Hotels</NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" activeClassName='active' to='/teleportation'>Teleportation</NavLink>
+            </li>
           </ul>
         </div>
       </nav>
