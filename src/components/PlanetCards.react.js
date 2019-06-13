@@ -34,7 +34,7 @@ export default class Hotels extends React.Component {
            .slice(0, 3)
            .map((res, index) =>
               <div className="card col-md-4" key={res._id}>
-                <img className="card-img-top planet-picture" src={res.image} alt="Card image cap"/>
+                <img className="card-img-top planet-picture" src={res.image} alt="Planet Card"/>
                 <div className="card-body">
                   <h5 className="card-title">{res.name}</h5>
                   <p className="card-text">{res.info}</p>

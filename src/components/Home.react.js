@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PlanetCards from './PlanetCards.react.js'
 
 export default function Hero(props) {
