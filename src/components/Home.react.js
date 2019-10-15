@@ -1,4 +1,5 @@
 import React from 'react';
+import DailyDeal from './DailyDeal.react.js'
 import PlanetCards from './PlanetCards.react.js'
 
 export default function Hero(props) {
@@ -9,6 +10,8 @@ export default function Hero(props) {
         <p>We help you with flights, teleportation and hotels with the best prices available!</p>
         <hr className="my-4"/>
         <PlanetCards />
+        <hr className="my-4"/>
+        <DailyDeal />
       </div>
   );
 }
