@@ -10,6 +10,8 @@ import NumberFormat from 'react-number-format';
 
 import locationsData from '../data/locations.json';
 
+import dailyDealCalc from '../common/dailyDeal.js';
+
 const cssStyles = {
   minWidth: 180
 }
@@ -34,10 +36,23 @@ export default class Hotels extends React.Component {
       displayHotelSecondResults: false,
       displayFinalHotelResults: false,
       firstHotelResults: [],
-      secondHotelResults: []
+      secondHotelResults: [],
+      dailyDealData: [],
+      dailyDealError: false,
+      discountAmount: 0
     }
 
     this.locations = locationsData;
+  }
+
+  componentDidMount() {
+    fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/dailyDeals")
+      .then(res => res.json())
+      .then(
+        (result) => this.setState({ dailyDealData: result }),
+      ).catch((error) => {
+        this.setState({dailyDealError : true})
+      });
   }
 
   handleChange = name => event => {
@@ -110,7 +125,7 @@ export default class Hotels extends React.Component {
 
   pickHotelRoomType(hotelRoomData) {
     this.hotelRoomData = hotelRoomData;
-    
+
     this.setState({displayHotelSecondResults: false});
     this.setState({loadingScreen: true});
 
@@ -127,9 +142,20 @@ export default class Hotels extends React.Component {
     const hotelRoomCost = this.hotelRoomData.price;
     const hotelRoomNights = Math.floor(( Date.parse(this.state.checkOutDate) - Date.parse(this.state.checkInDate) ) / 86400000)
 
-    this.totalHotelsSubtotal = hotelRoomCost * hotelRoomNights;
+    this.totalHotelsSubtotal = this.calculateDiscount(hotelRoomCost * hotelRoomNights);
     this.totalHotelsTaxtotal = (+this.totalHotelsSubtotal) * taxAmt;
     this.totalHotelsCost = (Math.round(this.totalHotelsSubtotal * 100) / 100)  + (Math.round(this.totalHotelsTaxtotal * 100) / 100);
+  }
+
+  calculateDiscount(subTotal) {
+    if (!this.state.dailyDealError) {
+      const discountData = dailyDealCalc(this.state.dailyDealData, "Hotels", subTotal);
+      this.setState({discountAmount: discountData.discountAmount});
+      return discountData.newTotal;
+    } else {
+      return subTotal;
+    }
+
   }
 
   render() {
@@ -268,6 +294,9 @@ export default class Hotels extends React.Component {
                   </li>
                   <li className="list-group-item">
                     <p> <span className="font-weight-bold">Subtotal: </span> <NumberFormat value={this.totalHotelsSubtotal} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
+                    {  this.state.discountAmount > 0 ?
+                      <p> Congrats you have saved <NumberFormat value={this.state.discountAmount} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /> on your subtotal because of today's deal - { this.state.dailyDealData.title } </p>
+                      : null }
                     <p> <span className="font-weight-bold">Tax: </span> <NumberFormat value={this.totalHotelsTaxtotal} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
                     <p> <span className="font-weight-bold">Total Price: </span> <NumberFormat value={this.totalHotelsCost} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
                     <p> Thank you for choosing your hotels with Zzpace!</p>

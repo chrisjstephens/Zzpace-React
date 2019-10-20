@@ -8,8 +8,11 @@ import Select from '@material-ui/core/Select';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DateFormat from 'dateformat';
 import NumberFormat from 'react-number-format';
+
 import locationsData from '../data/locations.json';
 import ticketsNumData from '../data/ticketsNum.json';
+
+import dailyDealCalc from '../common/dailyDeal.js';
 
 const cssStyles = {
   minWidth: 180
@@ -41,7 +44,10 @@ export default class Flights extends React.Component {
       flightData: [],
       returnFlightResults: [],
       departureFlightResults: [],
-      flightsDataError: false
+      flightsDataError: false,
+      dailyDealData: [],
+      dailyDealError: false,
+      discountAmount: 0
     };
 
     this.totalFlightsSubtotal = 0;
@@ -50,6 +56,16 @@ export default class Flights extends React.Component {
 
     this.locations = locationsData;
     this.ticketsNum = ticketsNumData;
+  }
+
+  componentDidMount() {
+    fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/dailyDeals")
+      .then(res => res.json())
+      .then(
+        (result) => this.setState({ dailyDealData: result }),
+      ).catch((error) => {
+        this.setState({dailyDealError : true})
+      });
   }
 
   handleChange = name => event => {
@@ -147,7 +163,6 @@ pickReturnFlight(flightReturnData) {
                        '&departureDate=' + this.state.departureDate +
                        '&returnDate=' + this.state.returnDate +
                        '&ticketsAmt=' + this.state.ticketsAmt;
-
     return flightParamString;
   }
 
@@ -157,9 +172,19 @@ calculateFlightCosts() {
     const returnFlightCost = this.flightData[1] ? this.flightData[1].flightPrice : 0;
     const ticketsAmt = this.state.ticketsAmt;
 
-    this.totalFlightsSubtotal = (departureFlightCost + returnFlightCost) * ticketsAmt;
+    this.totalFlightsSubtotal = this.calculateDiscount((departureFlightCost + returnFlightCost) * ticketsAmt);
     this.totalFlightsTaxtotal = (+this.totalFlightsSubtotal) * taxAmt;
     this.totalFlightsCost = (Math.round(this.totalFlightsSubtotal * 100) / 100)  + (Math.round(this.totalFlightsTaxtotal * 100) / 100);
+  }
+
+  calculateDiscount(subTotal) {
+    if (!this.state.dailyDealError) {
+      const discountData = dailyDealCalc(this.state.dailyDealData, "Flights", subTotal);
+      this.setState({discountAmount: discountData.discountAmount});
+      return discountData.newTotal;
+    } else {
+      return subTotal;
+    }
   }
 
   render() {
@@ -198,6 +223,25 @@ calculateFlightCosts() {
               <div className="form-row">
                 <div className="form-group col-md-4">
                   <FormControl  style={cssStyles}>
+                    <InputLabel htmlFor="from-simple">From</InputLabel>
+                    <Select
+                      value={this.state.fromLocation}
+                      onChange={this.handleChange('fromLocation')}
+                      inputProps={{
+                        name: "from",
+                        id: "from-simple"
+                      }}
+                    >
+                    {this.locations.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                    </Select>
+                  </FormControl>
+                </div>
+                <div className="form-group col-md-4">
+                  <FormControl  style={cssStyles}>
                     <InputLabel htmlFor="from-simple">To</InputLabel>
                     <Select
                       value={this.state.toLocation}
@@ -214,25 +258,6 @@ calculateFlightCosts() {
                     ))}
                     </Select>
                   </FormControl>
-                </div>
-                <div className="form-group col-md-4">
-                <FormControl  style={cssStyles}>
-                  <InputLabel htmlFor="from-simple">From</InputLabel>
-                  <Select
-                    value={this.state.fromLocation}
-                    onChange={this.handleChange('fromLocation')}
-                    inputProps={{
-                      name: "from",
-                      id: "from-simple"
-                    }}
-                  >
-                  {this.locations.map(option => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                  </Select>
-                </FormControl>
                 </div>
                 { invalidLocations ?
                   <p className="text-danger px-1">The locations cant match, please ensure that they are different.</p>
@@ -366,9 +391,12 @@ calculateFlightCosts() {
                 )
               }
               <li className="list-group-item">
-              <p>Subtotal: <NumberFormat value={this.totalFlightsSubtotal} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
-              <p>Tax: <NumberFormat value={this.totalFlightsTaxtotal} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
-              <p>Total Price: <NumberFormat value={this.totalFlightsCost} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
+              <p> <span className="font-weight-bold">Subtotal:</span> <NumberFormat value={this.totalFlightsSubtotal} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
+              {  this.state.discountAmount > 0 ?
+                <p> Congrats you have saved <NumberFormat value={this.state.discountAmount} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /> on your subtotal because of today's deal - { this.state.dailyDealData.title } </p>
+                : null }
+              <p> <span className="font-weight-bold">Tax:</span> <NumberFormat value={this.totalFlightsTaxtotal} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
+              <p> <span className="font-weight-bold">Total Price:</span> <NumberFormat value={this.totalFlightsCost} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} /></p>
               <p>Thank you for flying with Zzpace!</p>
               </li>
               </ul>
