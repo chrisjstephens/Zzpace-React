@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class DailyDealy extends React.Component {
+export default class DailyDeal extends React.Component {
   constructor(props) {
     super(props);
 

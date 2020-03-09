@@ -2,7 +2,7 @@ import React from 'react';
 import DailyDeal from './DailyDeal.react.js'
 import PlanetCards from './PlanetCards.react.js'
 
-export default function Hero(props) {
+export default function Home(props) {
   return (
       <div>
         <h1 className="display-4">Welcome to Zzpace</h1>

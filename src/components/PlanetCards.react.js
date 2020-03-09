@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class Hotels extends React.Component {
+export default class PlanetCards extends React.Component {
   constructor(props) {
     super(props);
 
