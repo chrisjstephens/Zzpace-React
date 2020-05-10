@@ -1,8 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
+import { connect } from 'react-redux';
+import * as actions from '../actions';
 
-
-export default class HeaderView extends React.Component {
+class HeaderView extends React.Component {
   constructor(props) {
     super(props);
 
@@ -17,7 +19,6 @@ export default class HeaderView extends React.Component {
 
   render() {
     const navCollapsed = this.state.navCollapsed;
-
 
     return (
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -39,9 +40,21 @@ export default class HeaderView extends React.Component {
             <li className="nav-item">
               <NavLink className="nav-link" activeClassName='active' to='/teleportation'>Teleportation</NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink className="nav-link d-block d-sm-block d-lg-none" activeClassName='active' to='/login' onClick={this.props.username ? this.props.signout : null}>{this.props.username ? <>Logout</> : <>Login</> }</NavLink>
+            </li>
           </ul>
+          <Button variant="outlined" className="login-button d-none d-lg-block d-xl-block" type="submit" onClick={this.props.username ? this.props.signout : null}>
+            <NavLink to='/login'> {this.props.username ? <>Logout</> : <>Login</> }</NavLink>
+          </Button>
         </div>
       </nav>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  username: state.login.username,
+})
+
+export default connect(mapStateToProps, actions)(HeaderView);

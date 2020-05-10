@@ -109,7 +109,7 @@ export default class Hotels extends React.Component {
 
     const hotelsFormData = this.createHotelRoomTypeData(hotelData);
 
-    fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/processHotels" + hotelsFormData)
+    fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/processHotels" + hotelsFormData)  //TODO: change to axios/post? or fetch with POST
       .then(res => res.json())
       .then(
         (result) => this.setState({ secondHotelResults: result }),

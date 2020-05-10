@@ -32,3 +32,10 @@ code {
     padding-left: 0;
   }
 }
+
+@media (min-width: 992px) {
+  .login-button {
+    position: absolute !important;
+    right: 1rem;
+  }
+}
