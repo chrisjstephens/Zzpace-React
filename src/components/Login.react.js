@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
@@ -18,7 +19,7 @@ class Login extends React.Component {
 
   handleChange = name => event => {
     this.setState({
-      [name]: event.target.value,
+      [name]: event.target.value, //TODO: Change this to only use props, set to redux
     });
   };
 
@@ -89,19 +90,12 @@ class Login extends React.Component {
             </form>
           </div>
         :
-          <div className="form-row">
-            <div className="form-group">
-            <p> Currently logged in as - <strong>{this.props.username}</strong> </p>
-              <Button variant="outlined" type="submit" onClick={this.props.signout}>
-                LOGOUT
-              </Button>
-            </div>
-          </div>
+          <Redirect to="/user" />
       }
       </div>
     );
   }
-
+  //TODO: Create logic for expiration date in token
 }
 
 const mapStateToProps = state => ({
@@ -109,5 +103,7 @@ const mapStateToProps = state => ({
   errorMessage: state.login.error,
   token: state.login.token
 })
+
+//TODO ISSUES WITH STATE AND REDUX STORING DATA
 
 export default connect(mapStateToProps, actions)(Login);

@@ -5,7 +5,7 @@ const INITIAL_STATE = {
   token: '',
   error: ''
 }
-
+//TODO: IMPROPPER? SHOULD BE IMMUTABLE
 export default function (state = INITIAL_STATE, action) {
     switch (action.type) {
       case LOGIN_SUCCESS:

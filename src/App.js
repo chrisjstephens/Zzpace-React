@@ -11,7 +11,9 @@ import Home from './components/Home.react.js';
 import Hotels from './components/Hotels.react.js';
 import Login from './components/Login.react.js';
 import Teleportation from './components/Teleportation.react.js';
+import User from './components/User.react.js';
 import Error from './components/Error.react.js';
+import RequireAuth from './components/RequireAuth.react.js';
 import reducers from './reducers' //calls exports from reducers file
 
 class App extends Component {
@@ -40,6 +42,7 @@ class App extends Component {
                   <Route path='/hotels' component={Hotels}/>
                   <Route path='/teleportation' component={Teleportation}/>
                   <Route path='/login' component={Login}/>
+                  <Route path='/user' component={RequireAuth(User)}/>
                   <Route component={Error}/>
                 </Switch>
               </div>
