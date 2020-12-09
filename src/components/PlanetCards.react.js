@@ -21,11 +21,12 @@ export default class PlanetCards extends React.Component {
         this.setState({planetCardsError : true})
       });
   }
+  //TODO ENSURE OBJECT HAS DATA, FEED HAS CRASHED WHEN MONGO DOWN< IT RETURNED EMPTY OBJECT
 
   render() {
     return (
       <div>
-      {!this.state.planetCardsError ?
+      {!this.state.planetCardsError && this.state.data.length > 1 ?
         <div className="planet-cards row no-gutters">
           <h2>At Zzpace you can travel to many places including:</h2>
           {
