@@ -5,7 +5,7 @@
   "homepage": "https://chrisstephensj.com/projects/Zzpace-React/",
   "dependencies": {
     "@material-ui/core": "^4.11.3",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "dateformat": "^3.0.3",
     "env-cmd": "^8.0.2",
