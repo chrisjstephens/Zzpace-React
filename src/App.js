@@ -10,6 +10,7 @@ import Flights from './components/Flights.react.js';
 import Home from './components/Home.react.js';
 import Hotels from './components/Hotels.react.js';
 import Login from './components/Login.react.js';
+import Register from './components/Register.react.js';
 import Teleportation from './components/Teleportation.react.js';
 import User from './components/User.react.js';
 import Error from './components/Error.react.js';
@@ -41,6 +42,7 @@ class App extends Component {
                   <Route path='/flights' component={Flights}/>
                   <Route path='/hotels' component={Hotels}/>
                   <Route path='/teleportation' component={Teleportation}/>
+                  <Route path='/register' component={Register}/>
                   <Route path='/login' component={Login}/>
                   <Route path='/user' component={RequireAuth(User)}/>
                   <Route component={Error}/>

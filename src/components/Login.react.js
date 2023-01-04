@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { Redirect } from "react-router-dom";
@@ -88,7 +89,8 @@ class Login extends React.Component {
 
                </div>
             </form>
-          </div>
+          <p>New to Zzpace? Please <NavLink to='/register'>register</NavLink> with us!</p>
+        </div>
         :
           <Redirect to="/user" />
       }
