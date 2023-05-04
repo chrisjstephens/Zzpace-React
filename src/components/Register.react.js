@@ -53,7 +53,7 @@ export default class Register extends React.Component {
     return (
     <div>
         <form noValidate onSubmit={this.submitForm.bind(this)} autoComplete="off">
-            <div className="form-row">
+            <div>
                 <h1>New User Registration</h1>
                 <p>Please register with a username and password!</p>
             </div>
