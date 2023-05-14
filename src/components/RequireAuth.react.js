@@ -5,7 +5,7 @@ import * as actions from '../actions';
 //HOC To block/restrict access to User component
 export default (ComposedComponent) => {
    class RequireAuth extends React.Component {
-
+      //TODO: Remove this, got deprecated
      componentWillMount() {
          if (!this.props.token)
           this.props.history.push("/login");
