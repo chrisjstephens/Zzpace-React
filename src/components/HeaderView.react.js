@@ -40,9 +40,13 @@ class HeaderView extends React.Component {
             <li className="nav-item">
               <NavLink className="nav-link" activeClassName='active' to='/teleportation'>Teleportation</NavLink>
             </li>
+            {this.props.username ?
+            <li className="nav-item">
+              <NavLink className="nav-link" activeClassName='active' to='/user'>User Panel</NavLink>
+            </li> : null }
             <li className="nav-item">
               <NavLink className="nav-link d-block d-sm-block d-lg-none" activeClassName='active' to='/login' onClick={this.props.username ? this.props.signout : null}>{this.props.username ? <>Logout</> : <>Login</> }</NavLink>
-            </li>
+            </li> 
           </ul>
           <Button variant="outlined" className="login-button d-none d-lg-block d-xl-block" type="submit" onClick={this.props.username ? this.props.signout : null}>
             <NavLink to='/login'> {this.props.username ? <>Logout</> : <>Login</> }</NavLink>
