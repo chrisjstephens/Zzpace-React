@@ -38,9 +38,6 @@ class Login extends React.Component {
   render() {
     const loggedIn = this.props.username;
 
-    const signedIn = this.props.username && this.props.token;
-    if (signedIn && this.state.username) { this.setState({username: ''}); }
-
     return (
     <div>
       { !loggedIn ?
