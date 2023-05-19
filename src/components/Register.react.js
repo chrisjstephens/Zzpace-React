@@ -10,7 +10,7 @@ export default class Register extends React.Component {
     this.state = {
         username: '',
         password: '',
-        newUserError: false,
+        newUserError: '',
         newUserCreated: false
     }
   }
@@ -34,15 +34,25 @@ export default class Register extends React.Component {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
     };
-    //todo:authorization token
 
-    //fetch("http://localhost:3000" + "/api/addUser", requestOptions) TODO:Fix local ip for backend address
     fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/addUser", requestOptions)
-      .then(res => res.json())
-      .then(
-        (result) => { this.setState({ newUserCreated: true })},
-      ).catch((error) => {
-        this.setState({newUserError : true});
+    .then(response => {
+      if (!response.ok) {
+        return response.text().then(text => {
+          ////Error, perhaps duplicate entry
+          this.setState({newUserError : text});
+          this.setState({newUserCreated : false});
+        })
+      } else {
+        return response.text().then(text => {
+          //User created
+          this.setState({newUserError : ''});
+          this.setState({newUserCreated : true});
+        })
+      }
+      }).catch(err => {
+        //Error, perhaps server side
+        this.setState({newUserError : err});
         this.setState({newUserCreated : false});
       });
   }
@@ -65,8 +75,8 @@ export default class Register extends React.Component {
                         value={this.state.username}
                         onChange={this.handleChange('username')}
                         margin="normal"
-                        error={this.state.username !== '' && this.state.username.length <= 8 ? true : false }
-                        helperText={this.state.username !== '' && this.state.username.length <= 8 ? 'The username must be at least 8 characters!' : ''}
+                        error={this.state.username !== '' && this.state.username.length < 8 ? true : false }
+                        helperText={this.state.username !== '' && this.state.username.length < 8 ? 'The username must be at least 8 characters!' : ''}
                     />
                 </div>
             </div>
@@ -80,8 +90,8 @@ export default class Register extends React.Component {
                         onChange={this.handleChange('password')}
                         value={this.state.password}
                         margin="normal"
-                        error={this.state.password !== '' && this.state.password.length <= 8 ? true : false }
-                        helperText={this.state.password !== '' && this.state.password.length <= 8 ? 'The password must be at least 8 characters!' : ''}
+                        error={this.state.password !== '' && this.state.password.length < 8 ? true : false }
+                        helperText={this.state.password !== '' && this.state.password.length < 8 ? 'The password must be at least 8 characters!' : ''}
                     />
                 </div>
             </div>
@@ -95,11 +105,11 @@ export default class Register extends React.Component {
             <div className="form-row">
                <div className="form-group col-md-4">
                    {this.state.newUserCreated ? 
-                       <p>Congrats, new user created!</p>
+                       <p className="text-success">Congrats, a new user has been created! - {this.state.username} </p>
                     : null 
                    }
                    {this.state.newUserError ?
-                       <p>An error occured, please try again!</p>
+                       <p className="text-danger">{this.state.newUserError}</p>
                     : null
                    }
                </div>
