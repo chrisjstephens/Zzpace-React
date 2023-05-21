@@ -7,7 +7,6 @@ const INITIAL_STATE = {
 }
 //TODO: IMPROPPER? SHOULD BE IMMUTABLE
 const Login = (state = INITIAL_STATE, action) => {
-    console.log('state/actiion', state, action);
     switch (action.type) {
       case LOGIN_SUCCESS:
         return {...state, username: action.payload.username, token: action.payload.token, error: ''} //TODO:ADD TYPE
