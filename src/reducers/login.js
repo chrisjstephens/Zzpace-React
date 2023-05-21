@@ -6,7 +6,8 @@ const INITIAL_STATE = {
   error: ''
 }
 //TODO: IMPROPPER? SHOULD BE IMMUTABLE
-export default function (state = INITIAL_STATE, action) {
+const Login = (state = INITIAL_STATE, action) => {
+    console.log('state/actiion', state, action);
     switch (action.type) {
       case LOGIN_SUCCESS:
         return {...state, username: action.payload.username, token: action.payload.token, error: ''} //TODO:ADD TYPE
@@ -18,3 +19,5 @@ export default function (state = INITIAL_STATE, action) {
         return state;
     }
   }
+
+  export default Login;
