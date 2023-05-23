@@ -17,8 +17,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-// import Alert from '@material-ui/lab/Alert';//TODO:Add once i update material ui
-
+import Alert from '@mui/material/Alert';
 
 
 function TabPanel(props) {
@@ -303,8 +302,16 @@ class User extends React.Component {
                      </div>
                     </div>
                     <div className="form-row">
-                      <p className="text-danger">{this.state.updateError}</p>
-                      {this.state.updateSuccess ? <p className="text-success">The update is successful!</p> : null} {/*TODO: Clear message once form is changed after clear*/}
+                      {this.state.updateError ?
+                        <Alert severity="error">
+                          {this.state.updateError}
+                        </Alert>
+                      : null }
+                      {this.state.updateSuccess ?
+                        <Alert severity="success">
+                          The update is successful!
+                        </Alert> 
+                      : null}
                     </div>
                   <Button variant="contained" onClick={this.updateInfo.bind(this)}>Update</Button>
                 </form>
@@ -339,23 +346,34 @@ class User extends React.Component {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  <p className="text-success">{this.state.adminTabMessage}</p>
-                  <p className="text-danger">{this.state.adminTabErrorMessage}</p>
+                  {this.state.adminTabMessage ?
+                    <Alert severity="success">
+                      {this.state.adminTabMessage}
+                    </Alert>
+                  : null }
+                  {this.state.adminTabErrorMessage ?
+                    <Alert severity="error">
+                      {this.state.adminTabErrorMessage}
+                    </Alert>
+                  : null }
                 </TabPanel>
                 :
                 null
                 }
                 {this.state.usersError ?
                 <div>
-                  <p className="text-danger"> An error has occured trying to grab Users Data
-                  </p>
+                    <Alert severity="error">
+                    An error has occured trying to grab Users Data
+                    </Alert>
                 </div> 
                 : null}
             </Paper>
           </div>
         :
           <div>
-            <p classname="text-danger">An error has occured trying to grab user data!</p>
+            <Alert severity="error">
+              An error has occured trying to grab user data!
+            </Alert>
           </div>
         }
       </div>

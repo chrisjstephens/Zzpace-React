@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import Alert from '@mui/material/Alert';
 import TextField from '@material-ui/core/TextField';
 
 export default class Register extends React.Component {
@@ -104,12 +105,16 @@ export default class Register extends React.Component {
             </div>
             <div className="form-row">
                <div className="form-group col-md-4">
-                   {this.state.newUserCreated ? 
-                       <p className="text-success">Congrats, a new user has been created! - {this.state.username} </p>
+                   {this.state.newUserCreated ?
+                        <Alert severity="success">
+                        Congrats, a new user has been created! - {this.state.username}
+                        </Alert>
                     : null 
                    }
                    {this.state.newUserError ?
-                       <p className="text-danger">{this.state.newUserError}</p>
+                        <Alert severity="error">
+                        {this.state.newUserError}
+                        </Alert>
                     : null
                    }
                </div>

@@ -4,7 +4,10 @@
   "private": true,
   "homepage": "https://chrisstephensj.com/projects/Zzpace-React/",
   "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
     "@material-ui/core": "^4.11.3",
+    "@mui/material": "^5.13.2",
     "axios": "^0.19.2",
     "bootstrap": "^4.6.0",
     "dateformat": "^3.0.3",

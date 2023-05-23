@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+import Alert from '@mui/material/Alert';
 import TextField from '@material-ui/core/TextField';
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
@@ -80,7 +81,9 @@ class Login extends React.Component {
               <div className="form-row">
                 <div className="form-group">
                   {this.props.errorMessage ?
-                    <p className="text-danger px-1"> {this.props.errorMessage} </p>
+                    <div>
+                      <Alert severity="error"> {this.props.errorMessage} </Alert>
+                    </div>
                     : null}
                   </div>
 
