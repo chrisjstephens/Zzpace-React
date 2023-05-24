@@ -99,7 +99,7 @@ export default class Flights extends React.Component {
 
     const flightFormData = this.createFlightFormPostData("departure");
 
-    fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/processFlights" + flightFormData)
+    fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/processFlights" + flightFormData) // TODO: Change to post perhaps if get/post changes server state
       .then(res => res.json())
       .then(
         (result) => this.setState({ departureFlightResults: result }),
