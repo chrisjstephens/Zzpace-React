@@ -2,10 +2,12 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Alert from '@mui/material/Alert';
-import TextField from '@material-ui/core/TextField';
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+import { TextField, InputAdornment, IconButton } from "@material-ui/core";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 class Login extends React.Component {
 
@@ -15,8 +17,11 @@ class Login extends React.Component {
     this.state = {
       username: '',
       password: '',
-      loginError: false
+      loginError: false,
+      showPassword: false
     }
+
+    this.flipStateValue = this.flipStateValue.bind(this)
   }
 
   handleChange = name => event => {
@@ -36,8 +41,12 @@ class Login extends React.Component {
     this.props.signin(formData);
   }
 
+  flipStateValue() {
+    this.setState({showPassword: !this.state.showPassword});
+  }
+ 
   render() {
-    const loggedIn = this.props.username;
+    const loggedIn = this.props.username;    
 
     return (
     <div>
@@ -64,10 +73,22 @@ class Login extends React.Component {
                     id="standard-password-input"
                     label="Password"
                     // className={classes.textField}
-                    type="password"
+                    type={this.state.showPassword ? "text" : "password"}
                     autoComplete="current-password"
                     onChange={this.handleChange('password')}
                     margin="normal"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={this.flipStateValue}
+                          >
+                            {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
                   />
                 </div>
               </div>
