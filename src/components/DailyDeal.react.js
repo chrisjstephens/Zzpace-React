@@ -6,14 +6,23 @@ export default function DailyDeal() {
   const cssAlertType = data === 'NoDeal' ? 'alert-danger' : 'alert-info';
 
   useEffect(() => {
-    // Todo: cache in localstorage or redux to reduce pageloads
-    fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/dailyDeals")
-      .then(res => res.json())
-      .then(
-        (result) => setData(result),
-      ).catch((error) => {
-        setDailyDealError(true)
-      });
+    const dailyDealData = localStorage.getItem("dailyDeal");
+
+    if (!dailyDealData) {
+      fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/dailyDeals")
+        .then(res => res.json())
+        .then(
+          (result) => {
+            setData(result)
+            localStorage.setItem("dailyDeal", JSON.stringify(result));
+          },
+        ).catch((error) => {
+          setDailyDealError(true)
+          localStorage.removeItem("dailyDeal");
+        });
+    } else {
+      setData(JSON.parse(dailyDealData));
+    }
   }, []);
 
     return (

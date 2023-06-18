@@ -5,13 +5,24 @@ export default function PlanetCards () {
   const [planetCardsError, setPlanetCardsError] = useState(false);
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/showLocations")
+    const planetCards = localStorage.getItem("planetCards");
+
+    if (!planetCards) {
+      fetch(process.env.REACT_APP_BACKEND_ADDRESS + "/api/showLocations")
       .then(res => res.json())
       .then(
-        (result) => setData(result),
+        (result) => {
+          setData(result);
+          localStorage.setItem("planetCards", JSON.stringify(result));
+        }
       ).catch((error) => {
-        setPlanetCardsError(true)
+        setPlanetCardsError(true);
+        localStorage.remove("planetCards");
       });
+    } else {
+      setData(JSON.parse(planetCards));
+    }
+    
   }, []);
   //TODO ENSURE OBJECT HAS DATA, FEED HAS CRASHED WHEN MONGO DOWN< IT RETURNED EMPTY OBJECT
 
